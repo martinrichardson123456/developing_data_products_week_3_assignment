@@ -1,0 +1,79 @@
+---
+title: "Week 3 assignment - plotly"
+author: "Martin Richardson - October 25, 2017"
+output: ioslides_presentation
+#output: html_document
+runtime: shiny
+---
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(plotly)
+library(datasets)
+```
+
+## The Chatterjee-Price Attitude Data
+
+From a survey of the clerical employees of a large financial organization, the data are aggregated from the questionnaires of the approximately 35 employees for each of 30 (randomly selected) departments. The numbers give the percent proportion of favourable responses to seven questions in each department. 
+
+```{r}
+names(attitude)
+```
+
+This data set contains an overall satisfaction rating (referred to as "rating") as well as six specific rating categories. Any five of these seven quantities can be added to the following plot, whether as x/y/z-axes, marker colour or marker size.
+
+
+## (3+2)-Dimensional plot
+
+```{r, echo = FALSE, cache = TRUE}
+df <- attitude
+```
+
+```{r echo = FALSE}
+inputPanel(
+  selectInput(inputId = "x_var", label = "Choose x-axis", 
+              choices = c("rating", "complaints", "privileges", 
+                          "learning", "raises", "critical", "advance"), 
+              selected = "rating"),
+  
+  selectInput(inputId = "y_var", label = "Choose y-axis", 
+              choices = c("rating", "complaints", "privileges", 
+                          "learning", "raises", "critical", "advance"), 
+              selected = "complaints"),
+  
+  selectInput(inputId = "z_var", label = "Choose z-axis", 
+              choices = c("rating", "complaints", "privileges", 
+                          "learning", "raises", "critical", "advance"), 
+              selected = "privileges")
+  )
+
+inputPanel(
+  selectInput(inputId = "colour_var", label = "Choose marker colour", 
+              choices = c("rating", "complaints", "privileges", 
+                          "learning", "raises", "critical", "advance"), 
+              selected = "learning"),
+  
+  selectInput(inputId = "size_var", label = "Choose marker size", 
+              choices = c("rating", "complaints", "privileges", 
+                          "learning", "raises", "critical", "advance"), 
+              selected = "raises")
+)
+```
+
+```{r warning = FALSE, message = FALSE, echo = FALSE}
+renderPlotly({
+
+  x_var      <- input$x_var
+  y_var      <- input$y_var
+  z_var      <- input$z_var
+  colour_var <- input$colour_var
+  size_var   <- input$size_var
+
+  p <- plot_ly(df, x = df[[x_var]], y = df[[y_var]], z = df[[z_var]],
+          type = "scatter3d", mode = "markers",
+          color = df[[colour_var]], size = df[[size_var]])
+
+  p
+  })  
+```
+
